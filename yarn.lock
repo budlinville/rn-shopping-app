@@ -1238,7 +1238,7 @@
   dependencies:
     "cross-spawn" "^6.0.5"
 
-"@expo/vector-icons@^12.0.0":
+"@expo/vector-icons@^12.0.0", "@expo/vector-icons@^12.0.3":
   "integrity" "sha512-KlQ1MC2ff/CBYV/Nsu+O7wa712I0plb5N5PdMhYxLbVGW2KkULEbAoFp04nab3R4eej/Tq10G+yjTu04q16n3g=="
   "resolved" "https://registry.npmjs.org/@expo/vector-icons/-/vector-icons-12.0.3.tgz"
   "version" "12.0.3"
