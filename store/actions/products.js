@@ -8,19 +8,27 @@ export const SET_PRODUCTS = 'SET_PRODUCTS';
 export const fetchProducts = () => {
 	return async dispatch => {
 		// can write any async code I want now
-		const response = await fetch('https://rn-complete-guide-785b1-default-rtdb.firebaseio.com/products.json');
-		const respData = await response.json();
-		console.log(respData);
-		console.log('entires', Object.entries(respData));
-		const loadedProducts = Object.entries(respData).map((entry) => new Product(
-			entry[0],	// key
-			'u1',
-			entry[1].title,
-			entry[1].imageUrl,
-			entry[1].description,
-			entry[1].price
-		));
-		dispatch({ type: SET_PRODUCTS, products: loadedProducts })
+		try {
+			const response = await fetch('https://rn-complete-guide-785b1-default-rtdb.firebaseio.com/products.json');
+			
+			if (!response.ok) {
+				throw new Error('Something went wrong');
+			}
+
+			const respData = await response.json();
+			const loadedProducts = respData && Object.entries(respData).map((entry) => new Product(
+				entry[0],	// key
+				'u1',
+				entry[1].title,
+				entry[1].imageUrl,
+				entry[1].description,
+				entry[1].price
+			)) || [];
+			dispatch({ type: SET_PRODUCTS, products: loadedProducts })
+		} catch (err) {
+			// maybe send to custom analytics server
+			throw err;
+		}
 	};
 };
 

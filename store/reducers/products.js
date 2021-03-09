@@ -12,7 +12,7 @@ export default (state=initialState, action) => {
 		case SET_PRODUCTS:
 			return {
 				availableProducts: action.products,
-				userProducts: action.products.filter(prod => prod.ownerId === 'u1')
+				userProducts: action.products && action.products.filter(prod => prod.ownerId === 'u1')
 			};
 		case CREATE_PRODUCT: {
 			const { id, title, imageUrl, description, price } = action.productData;
