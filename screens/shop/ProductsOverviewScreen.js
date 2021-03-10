@@ -34,6 +34,21 @@ const ProductsOverviewScreen = props => {
 		setIsLoading(false);
 	}, [dispatch, setIsLoading, setError]);
 
+	// Below code will re-render the products every time I go to ProductsOverview drawer
+	// This doesn't happen automatically for a drawer navigator. Rather drawer navigator
+	// keeps all data for all drawers in memory. 
+	// (Stack navigator is different)
+	// This way, if value changes somewhere else, this will be reflected when I visit
+	// this drawer again
+	// (Is not real-time updates though... need AWS AppSync for that)
+	const { navigation } = props;
+	useEffect(() => {
+		const willFocusSubscription = navigation.addListener('willFocus', loadProducts);
+		return () => {
+			willFocusSubscription.remove();
+		};
+	}, [loadProducts, navigation]);
+
 	useEffect(() => {
 		loadProducts();
 	}, [dispatch, loadProducts]);
