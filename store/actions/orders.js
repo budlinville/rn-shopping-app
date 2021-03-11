@@ -13,11 +13,11 @@ export const fetchOrders = () => {
 
 			const respData = await response.json();
 			// id, items, totalAmount, date
-			const loadedOrders = respData && Object.entries(respData).map((entry) => new Order(
-				entry[0],	// key
-				entry[1].cartItems,
-				entry[1].totalAmount,
-				new Date(entry[1].date)
+			const loadedOrders = respData && Object.entries(respData).map(([key, value]) => new Order(
+				key,
+				value.cartItems,
+				value.totalAmount,
+				new Date(value.date)
 			)) || [];
 			dispatch({ type: SET_ORDERS, orders: loadedOrders });
 		} catch (err) {

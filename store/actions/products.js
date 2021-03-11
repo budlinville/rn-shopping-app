@@ -16,13 +16,13 @@ export const fetchProducts = () => {
 			}
 
 			const respData = await response.json();
-			const loadedProducts = respData && Object.entries(respData).map((entry) => new Product(
-				entry[0],	// key
+			const loadedProducts = respData && Object.entries(respData).map(([key, value]) => new Product(
+				key,
 				'u1',
-				entry[1].title,
-				entry[1].imageUrl,
-				entry[1].description,
-				entry[1].price
+				value.title,
+				value.imageUrl,
+				value.description,
+				value.price
 			)) || [];
 			dispatch({ type: SET_PRODUCTS, products: loadedProducts })
 		} catch (err) {
