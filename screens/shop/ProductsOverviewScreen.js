@@ -20,23 +20,24 @@ import Colors from '../../constants/Colors'
 const ProductsOverviewScreen = props => {
 	const dispatch = useDispatch();
 	const [error, setError] = useState();
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const products = useSelector(state => state.products.availableProducts);
 
 	const loadProducts = useCallback(async () => {
 		setError(null);
-		setIsLoading(true);
+		setIsRefreshing(true);
 		try {
 			await dispatch(productsActions.fetchProducts());
 		} catch (err) {
 			setError(err.message)
 		}
-		setIsLoading(false);
+		setIsRefreshing(false);
 	}, [dispatch, setIsLoading, setError]);
 
 	// Below code will re-render the products every time I go to ProductsOverview drawer
 	// This doesn't happen automatically for a drawer navigator. Rather drawer navigator
-	// keeps all data for all drawers in memory. 
+	// keeps all data for all drawers in memory.
 	// (Stack navigator is different)
 	// This way, if value changes somewhere else, this will be reflected when I visit
 	// this drawer again
@@ -50,7 +51,8 @@ const ProductsOverviewScreen = props => {
 	}, [loadProducts, navigation]);
 
 	useEffect(() => {
-		loadProducts();
+		setIsLoading(true);
+		loadProducts().then( () => setIsLoading(false) );	// old syntax; could also use await
 	}, [dispatch, loadProducts]);
 
 	const selectItemHandler = (id, title) => {
@@ -87,6 +89,8 @@ const ProductsOverviewScreen = props => {
 
 	return (
 		<FlatList
+			onRefresh={loadProducts}
+			refreshing={isRefreshing}
 			data={products}
 			renderItem={ itemData => (
 				<ProductItem
