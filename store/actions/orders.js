@@ -10,9 +10,7 @@ export const fetchOrders = () => {
 			if (!response.ok) {
 				throw new Error('Something went wrong');
 			}
-
 			const respData = await response.json();
-			// id, items, totalAmount, date
 			const loadedOrders = respData && Object.entries(respData).map(([key, value]) => new Order(
 				key,
 				value.cartItems,
