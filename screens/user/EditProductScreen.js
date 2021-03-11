@@ -126,6 +126,8 @@ const EditProductScreen = props => {
 						keyboardType='default'
 						returnKeyType='next'
 						onInputChange={inputChangeHandler}
+						initialValue={ editedProduct ? editedProduct.imageUrl : ''}
+						initiallyValid={ !!editedProduct }
 						required
 					/>
 					{ editedProduct ? null : (
@@ -151,6 +153,8 @@ const EditProductScreen = props => {
 						autoCorrect
 						multiline
 						numberOfLines={3}	// android only
+						initialValue={ editedProduct ? editedProduct.description : ''}
+						initiallyValid={ !!editedProduct }
 						required
 						minLength={5}
 					/>
