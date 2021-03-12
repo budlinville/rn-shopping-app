@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useState, useReducer, useCallback } from 'react';
 import {
 	View,
 	KeyboardAvoidingView,
@@ -41,6 +41,7 @@ const formReducer = (state, action) => {
 
 const AuthScreen = props => {
 	const dispatch = useDispatch();
+	const [isSignup, setIsSignup] = useState(false);
 
 	const [formState, dispatchFormState] = useReducer(formReducer, {
 		inputValues: {
@@ -54,9 +55,12 @@ const AuthScreen = props => {
 		formIsValid: false
 	});
 
-	const signupHandler = () => {
+	const authHandler = () => {
 		const { email, password } = formState.inputValues;
-		dispatch(authActions.signup(email, password));
+		const action = isSignup
+			? authActions.signup( email, password )
+			: authActions.login( email, password );
+		dispatch(action);
 	};
 
 	const inputChangeHandler = useCallback(
@@ -103,16 +107,18 @@ const AuthScreen = props => {
 						/>
 						<View style={styles.buttonContainer}>
 							<Button
-								title='Login'
+								title={isSignup ? 'Sign Up' : 'Login'}
 								color={Colors.primary}
-								onPress={signupHandler}
+								onPress={authHandler}
 							/>
 						</View>
 						<View style={styles.buttonContainer}>
 							<Button
-								title='Switch to Sign Up'
+								title={`Switch to ${isSignup ? 'Login' : 'Sign Up'}`}
 								color={Colors.accent}
-								onPress={() => {}}
+								onPress={() => {
+									setIsSignup(prevState => !prevState);
+								}}
 							/>
 						</View>
 					</ScrollView>

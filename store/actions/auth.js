@@ -1,11 +1,13 @@
 export const SIGNUP = 'SIGNUP';
+export const LOGIN = 'LOGIN';
+
+const firebaseAuthUrl = 'https://identitytoolkit.googleapis.com/v1/accounts';
+const firebaseAuthKey = 'AIzaSyAxDJ-nJmd0M_OmKOmTeVZQ9eqeG-LXaEw';
 
 export const signup = (email, password) => {
-	console.log('email', email);
-	console.log('password', password);
 	return async dispatch => {
 		const response = await fetch(
-			'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAxDJ-nJmd0M_OmKOmTeVZQ9eqeG-LXaEw',
+			`${firebaseAuthUrl}:signUp?key=${firebaseAuthKey}`,
 			{
 				method: 'POST',
 				headers: {
@@ -14,7 +16,6 @@ export const signup = (email, password) => {
 				body: JSON.stringify({
 					email,
 					password,
-					token: 'testing',
 					returnSecureToken: true
 				})
 			}
@@ -25,10 +26,32 @@ export const signup = (email, password) => {
 		}
 
 		const respData = await response.json();
-
-		// TODO: remove this
-		console.log(respData);
-
 		dispatch({ type: SIGNUP })
+	};
+};
+
+export const login = (email, password) => {
+	return async dispatch => {
+		const response = await fetch(
+			`${firebaseAuthUrl}:signInWithPassword?key=${firebaseAuthKey}`,
+			{
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					email,
+					password,
+					returnSecureToken: true
+				})
+			}
+		);
+
+		if (!response.ok) {
+			throw new Error('Something went wrong!');
+		}
+
+		const respData = await response.json();
+		dispatch({ type: LOGIN })
 	};
 };
