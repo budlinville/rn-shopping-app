@@ -32,7 +32,7 @@ export const signup = (email, password) => {
 		}
 
 		const respData = await response.json();
-		dispatch({ type: SIGNUP })
+		dispatch({ type: SIGNUP, token: respData.idToken, userId: respData.localId });
 	};
 };
 
@@ -66,6 +66,6 @@ export const login = (email, password) => {
 		}
 
 		const respData = await response.json();
-		dispatch({ type: LOGIN })
+		dispatch({ type: LOGIN, token: respData.idToken, userId: respData.localId });
 	};
 };

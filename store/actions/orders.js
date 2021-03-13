@@ -3,10 +3,12 @@ import Order from '../../models/order';
 export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
+const firebaseOrdersUrl = 'https://rn-complete-guide-785b1-default-rtdb.firebaseio.com/orders';
+
 export const fetchOrders = () => {
 	return async dispatch => {
 		try {
-			const response = await fetch('https://rn-complete-guide-785b1-default-rtdb.firebaseio.com/orders/u1.json');
+			const response = await fetch(`${firebaseOrdersUrl}/u1.json`);
 			if (!response.ok) {
 				throw new Error('Something went wrong');
 			}
@@ -25,9 +27,10 @@ export const fetchOrders = () => {
 };
 
 export const addOrder = (cartItems, totalAmount) => {
-	return async dispatch => {
+	return async (dispatch, getState) => {
+		const token = getState().auth.token;
 		const date = new Date();
-		const response = await fetch('https://rn-complete-guide-785b1-default-rtdb.firebaseio.com/orders/u1.json', {
+		const response = await fetch(`${firebaseOrdersUrl}/u1.json?auth=${token}`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
