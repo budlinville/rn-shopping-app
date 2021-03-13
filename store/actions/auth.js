@@ -3,12 +3,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
 
-export const authenticate = (userId, token) => ({
-	type: AUTHENTICATE, userId, token
-});
-
 const firebaseAuthUrl = 'https://identitytoolkit.googleapis.com/v1/accounts';
 const firebaseAuthKey = 'AIzaSyAxDJ-nJmd0M_OmKOmTeVZQ9eqeG-LXaEw';
+
+let timer;
+
+export const authenticate = (userId, token, expiryTime) => {
+	return dispatch => {
+		dispatch(setLogoutTimer(expiryTime));
+		dispatch({ type: AUTHENTICATE, userId, token });
+	}
+};
 
 export const signup = (email, password) => {
 	return async dispatch => {
@@ -38,7 +43,11 @@ export const signup = (email, password) => {
 		}
 
 		const respData = await response.json();
-		dispatch(authenticate(respData.localId, respData.idToken));
+		dispatch(authenticate(
+			respData.localId,
+			respData.idToken,
+			+respData.expiresIn * 1000
+		));
 		const expirationDate = new Date(
 			new Date().getTime() + (parseInt(respData.expiresIn) * 1000)
 		);
@@ -76,7 +85,11 @@ export const login = (email, password) => {
 		}
 
 		const respData = await response.json();
-		dispatch(authenticate(respData.localId, respData.idToken));
+		dispatch(authenticate(
+			respData.localId,
+			respData.idToken,
+			+respData.expiresIn * 1000
+		));
 		const expirationDate = new Date(
 			new Date().getTime() + (parseInt(respData.expiresIn) * 1000)
 		);
@@ -84,7 +97,32 @@ export const login = (email, password) => {
 	};
 };
 
-export const logout = () => ({ type: LOGOUT });
+export const logout = () => {
+	clearLogoutTimer();
+	// will return a promise.. could handle this asynchronously, but no real
+	// reason to do so, since we don't care about result
+	AsyncStorage.removeItem('userData');
+	return { type: LOGOUT }
+};
+
+const clearLogoutTimer = () => {
+	if (timer) {
+		clearTimeout(timer);
+	}
+};
+
+// This approach will surely give us a warning on Android as there is no efficient way
+// on android devices to handle lengthy timers. Rather, it will keep the timer module running
+// in the background, which will deteriorate app performance. There is no good fix, but see
+// discussion forum linked in lecture 228 of 'React Native - The Practical Guide [2021 Edition]'
+// for possible workarounds
+const setLogoutTimer = expirationTime => {
+	return dispatch => {
+		timer = setTimeout(() => {
+			dispatch(logout());
+		}, expirationTime);
+	}
+};
 
 // persist logged in session
 const saveDataToStorage = (token, userId, expirationDate) => {
