@@ -1,4 +1,6 @@
 import Product from "../../models/product";
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 const firebaseUrl = 'https://rn-complete-guide-785b1-default-rtdb.firebaseio.com';
 
@@ -22,6 +24,7 @@ export const fetchProducts = () => {
 			const loadedProducts = respData && Object.entries(respData).map(([key, value]) => new Product(
 				key,
 				value.ownerId,
+				value.ownerPushToken,
 				value.title,
 				value.imageUrl,
 				value.description,
@@ -56,6 +59,17 @@ export const deleteProduct = pid => {
 
 export const createProduct = ( title, description, imageUrl, price ) => {
 	return async (dispatch, getState) => {
+		let pushToken;
+		let statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+		if (statusObj.status !== 'granted') {
+			statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+		}
+		if (statusObj.status !== 'granted') {
+			pushToken = null;
+		} else {
+			pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+		}
+
 		const token = getState().auth.token;
 		const userId = getState().auth.userId;
 		const response = await fetch(`${firebaseUrl}/products.json?auth=${token}`, {
@@ -66,7 +80,8 @@ export const createProduct = ( title, description, imageUrl, price ) => {
 				description,
 				imageUrl,
 				price,
-				ownerId: userId
+				ownerId: userId,
+				ownerPushToken: pushToken
 			})
 		});
 

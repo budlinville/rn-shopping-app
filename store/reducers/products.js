@@ -15,8 +15,8 @@ export default (state=initialState, action) => {
 				userProducts: action.userProducts
 			};
 		case CREATE_PRODUCT: {
-			const { id, title, imageUrl, description, price, ownerId } = action.productData;
-			const newProduct = new Product(id, ownerId, title, imageUrl, description, price);
+			const { id, title, imageUrl, description, price, ownerId, pushToken } = action.productData;
+			const newProduct = new Product(id, ownerId, pushToken, title, imageUrl, description, price);
 			return {
 				...state,
 				availableProducts: state.availableProducts.concat(newProduct),
@@ -29,6 +29,7 @@ export default (state=initialState, action) => {
 			const updatedProduct = new Product(
 				pid,
 				state.userProducts[productIndex].ownerId,
+				state.userProducts[productIndex].pushToken,
 				title,
 				imageUrl,
 				description,

@@ -57,5 +57,26 @@ export const addOrder = (cartItems, totalAmount) => {
 				date
 			}
 		});
+
+		// send push notifications - probably better to do on server if possible
+		// think about it... we are sending push notifications for every item in our cart
+		// what if we have an instance with 10000000000 items in the cart..?
+		for (const cartItem of cartItems) {
+			const pushToken = cartItem.productPushToken;
+			fetch('https://exp.host/--/api/v2/push/send', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Accept-Enconding': 'gzip, deflate',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					to: pushToken,
+					title: 'Order was placed!',
+					body: cartItem.productTitle
+				})
+			})
+		}
+
 	};
 };

@@ -18,14 +18,21 @@
     "expo-app-loading": "^1.0.1",
     "expo-font": "^8.4.0",
     "expo-linear-gradient": "^8.4.0",
+    "expo-notifications": "~0.8.2",
+    "expo-permissions": "~10.0.0",
     "expo-status-bar": "~1.0.3",
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "^0.63.0",
+<<<<<<< HEAD
     "react-native-gesture-handler": "^1.8.0",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
+=======
+    "react-native-gesture-handler": "~1.8.0",
+    "react-native-reanimated": "~1.13.0",
+>>>>>>> 1af19a1... Added Push Notifications
     "react-native-screens": "~2.15.2",
     "react-native-web": "~0.13.12",
     "react-navigation": "^4.4.4",
