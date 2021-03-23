@@ -44,9 +44,9 @@ const ProductsOverviewScreen = props => {
 	// (Is not real-time updates though... need AWS AppSync for that)
 	const { navigation } = props;
 	useEffect(() => {
-		const willFocusSubscription = navigation.addListener('willFocus', loadProducts);
+		const unsubscribe = navigation.addListener('focus', loadProducts);
 		return () => {
-			willFocusSubscription.remove();
+			unsubscribe();
 		};
 	}, [loadProducts, navigation]);
 
@@ -115,7 +115,7 @@ const ProductsOverviewScreen = props => {
 	);
 };
 
-ProductsOverviewScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
 	return {
 		headerTitle: 'All Products',
 		headerLeft: () => (

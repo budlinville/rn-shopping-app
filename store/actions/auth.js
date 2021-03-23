@@ -2,11 +2,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
+export const SET_DID_TRY_AL = 'SET_DID_TRY_AL';
 
 const firebaseAuthUrl = 'https://identitytoolkit.googleapis.com/v1/accounts';
 const firebaseAuthKey = 'AIzaSyAxDJ-nJmd0M_OmKOmTeVZQ9eqeG-LXaEw';
 
 let timer;
+
+export const setDidTryAl = () => ({
+	type: SET_DID_TRY_AL
+});
 
 export const authenticate = (userId, token, expiryTime) => {
 	return dispatch => {
